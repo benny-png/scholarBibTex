@@ -1,3 +1,10 @@
 beautifulsoup4==4.10.0
 pyperclip==1.8.2
 requests==2.26.0
+selenium
+webdriver_manager
+tor-proxy
+win-tor-resources
+stem # A Tor project
+# REFERENCES 
+#https://github.com/ohyicong/Tor AND https://ohyicong.medium.com/how-to-create-tor-proxy-with-python-cheat-sheet-101-3d2d619a1d39

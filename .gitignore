@@ -1,0 +1,17 @@
+# Ignore .csv files
+*.csv
+
+# Ignore Tor folder
+/Tor/
+
+# Ignore .venv folder
+/.venv/
+
+# Ignore __pycache__ folder
+__pycache__/
+
+# Ignore Tor copies
+Tor\ copy/
+Tor\ copy\ 2/
+Tor\ copy\ 3/
+

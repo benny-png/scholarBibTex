@@ -2,27 +2,49 @@ import requests
 from bs4 import BeautifulSoup
 import pyperclip as pc
 
-paper = pc.paste()
-base_url = "https://scholar.google.de/scholar?hl=de&as_sdt=0%2C5&q=" + paper + "&btnG= "
+# Pre-set paper title
+paper = "Autonomous Electromagnetic Signal Analysis and Measurement System"
 
-googleSearch = requests.request("GET", url=base_url)
+# Construct the Google Scholar search URL
+base_url = f"https://scholar.google.com/scholar?hl=en&q={paper}"
+print(base_url)
 
-bs_page = BeautifulSoup(googleSearch.content, "html.parser")
-block = bs_page.find("div", {"class": "gs_ri"})
+# Send a GET request to Google Scholar
+response = requests.get(base_url)
+
+# Parse the response content with BeautifulSoup
+soup = BeautifulSoup(response.content, "html.parser")
+
+# Find the first search result block
+block = soup.find("div", {"class": "gs_ri"})
+
+# Extract the title and link
 title = block.find("h3")
 link = title.find("a")
-citation_id = link["id"]
 
-cite_url = "https://scholar.google.de/scholar?hl=de&q=info:" + citation_id + ":scholar.google.com/&output=cite&scirp=0"
+# Get the citation ID from the link
+citation_id = link["data-cid"]
 
-findLatex = requests.request("GET", url=cite_url)
+# Construct the citation URL
+cite_url = f"https://scholar.google.com/scholar?q=info:{citation_id}:scholar.google.com/&output=citation&scisig=AAGBfm0AAAAAZrHC7FrQRY7jF1accZg5V_rYLTw"
 
-citation_view = BeautifulSoup(findLatex.content, "html.parser")
-latex_link = citation_view.find("div", {"id": "gs_citi"})
+# Send a GET request to the citation URL
+cite_response = requests.get(cite_url)
 
-latex_mf = latex_link.findChildren("a")[0]["href"]
+# Parse the citation page content with BeautifulSoup
+cite_soup = BeautifulSoup(cite_response.content, "html.parser")
 
-result = BeautifulSoup(requests.request("GET", url=latex_mf).content, "html.parser")
-citation = result.text
+# Find the LaTeX citation link
+latex_link = cite_soup.find("a", text="BibTeX")["href"]
+
+# Send a GET request to the LaTeX citation link
+latex_response = requests.get(latex_link)
+
+# Extract the citation text
+citation = latex_response.text
+
+# Copy the citation text to the clipboard
 pc.copy(citation)
+
+# Print the citation text
 print(citation)
